@@ -1,3 +1,7 @@
+# Introduction
+
+This repo is an effor to add a ePaper display to the Thingy52. More specifically a Waveshare 1.5" V1 ePaper. Since almost all GPIOs of the Thingy are occupied it's necessary to give up the MOSFET outputs (and currently remove the transistors). Documentation to follow.
+
 # Nordic Thingy:52 SDK
 
 Welcome to the Nordic Thingy:52 software development kit.
