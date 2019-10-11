@@ -1,3 +1,3 @@
 [submodule "external/eink"]
 	path = external/eink
-	url = https://gitlab.com/hooeezit/waveshare-epaper-nrf52-dk-demo.git
+	url = https://gitlab.com/little-tesla/waveshare-epaper-nrf52-dk-demo.git
