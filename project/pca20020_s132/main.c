@@ -70,6 +70,12 @@
 #include "pca20020.h"
 #include "app_error.h"
 
+// Waveshare ePaper
+#include "einksvc.h"
+#include "nrf_gfx.h"
+#include "waveshare_epd.h"
+#include "ImageData.h"
+
 #define  NRF_LOG_MODULE_NAME "main          "
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
@@ -80,6 +86,14 @@
 
 static const nrf_drv_twi_t     m_twi_sensors = NRF_DRV_TWI_INSTANCE(TWI_SENSOR_INSTANCE);
 static m_ble_service_handle_t  m_ble_service_handles[THINGY_SERVICES_MAX];
+
+static uint8_t disptxt_buffer[16] = "Hello Epaper\0\0\0\0";
+static uint8_t epaper_pending;
+
+static const nrf_lcd_t * p_lcd = &nrf_lcd_wsepd154;
+extern const nrf_gfx_font_desc_t orkney_24ptFontInfo;
+extern const nrf_gfx_font_desc_t orkney_8ptFontInfo;
+static const nrf_gfx_font_desc_t * p_font = &orkney_8ptFontInfo;
 
 void app_error_fault_handler(uint32_t id, uint32_t pc, uint32_t info)
 {
@@ -344,6 +358,47 @@ static void board_init(void)
     nrf_delay_ms(100);
 }
 
+static void epaper_demo_text(void)
+{
+    APP_ERROR_CHECK(nrf_gfx_init(p_lcd));
+    nrf_gfx_rotation_set(p_lcd, NRF_LCD_ROTATE_270);
+    nrf_gfx_point_t text_start = NRF_GFX_POINT(15, 70);
+    nrf_gfx_screen_fill(p_lcd, 0xff);
+    APP_ERROR_CHECK(nrf_gfx_print(p_lcd, &text_start, 0x00, (const char *)disptxt_buffer, p_font, true));
+    nrf_gfx_display(p_lcd);
+    nrf_gfx_uninit(p_lcd);
+}
+
+/**@brief Draws geometric objects and text on epaper display
+ *
+ * @details Translation of Waveshare epaper demo code to run on nRF52
+ */
+static void epaper_demo_draw(void)
+{
+    APP_ERROR_CHECK(nrf_gfx_init(p_lcd));
+    nrf_gfx_rotation_set(p_lcd, NRF_LCD_ROTATE_270);
+    nrf_gfx_point_t text_start = NRF_GFX_POINT(15, 70);
+    nrf_gfx_screen_fill(p_lcd, 0xff);
+    APP_ERROR_CHECK(nrf_gfx_print(p_lcd, &text_start, 0x00, DEVICE_NAME, p_font, true));
+    nrf_gfx_point_t text_custom = NRF_GFX_POINT(100, 160);
+    APP_ERROR_CHECK(nrf_gfx_print(p_lcd, &text_custom, 0x00, "little tesla", p_font, true));
+    nrf_gfx_circle_t circ_1 = NRF_GFX_CIRCLE(25, 25, 10);
+    nrf_gfx_circle_draw(p_lcd, &circ_1, 0x00, false);
+    circ_1.x = 125;
+    nrf_gfx_circle_draw(p_lcd, &circ_1, 0x00, true);
+    nrf_gfx_line_t line = NRF_GFX_LINE(15, 150, 150, 150, 2);
+    APP_ERROR_CHECK(nrf_gfx_line_draw(p_lcd, &line, 0x00));
+    nrf_gfx_display(p_lcd);
+    nrf_gfx_uninit(p_lcd);
+}
+
+static void epaper_demo_imarray(void)
+{
+    APP_ERROR_CHECK(nrf_gfx_init(p_lcd));
+    wsepd154_draw_monobmp((const uint8_t *)gImage_1in54);
+    nrf_gfx_display(p_lcd);
+    nrf_gfx_uninit(p_lcd);
+}
 
 /**@brief Application main function.
  */
@@ -362,6 +417,12 @@ int main(void)
 
     board_init();
     thingy_init();
+
+    NRF_LOG_INFO("Waveshare EPD example started.\r\n");
+
+    //epaper_demo_text();
+    //epaper_demo_draw();
+    epaper_demo_imarray();
 
     for (;;)
     {

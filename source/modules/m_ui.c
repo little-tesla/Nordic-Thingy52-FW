@@ -280,6 +280,7 @@ static void ble_uis_pin_write_handler(ble_uis_t * p_uis, ble_uis_pin_t * pin)
                                                                               pin->mos_3,
                                                                               pin->mos_4);
 
+/*
    if (pin->mos_1)
    {
        nrf_gpio_pin_set(MOS_1);
@@ -315,6 +316,7 @@ static void ble_uis_pin_write_handler(ble_uis_t * p_uis, ble_uis_pin_t * pin)
    {
        nrf_gpio_pin_clear(MOS_4);
    }
+   */
 }
 
 
@@ -472,14 +474,14 @@ uint32_t m_ui_init(m_ble_service_handle_t * p_handle, m_ui_init_t * p_params)
     (void)drv_ext_light_off(DRV_EXT_RGB_LED_SENSE);
     (void)drv_ext_light_off(DRV_EXT_RGB_LED_LIGHTWELL);
     
-    nrf_gpio_cfg_output(MOS_1);
-    nrf_gpio_cfg_output(MOS_2);
-    nrf_gpio_cfg_output(MOS_3);
-    nrf_gpio_cfg_output(MOS_4);
-    nrf_gpio_pin_clear(MOS_1);
-    nrf_gpio_pin_clear(MOS_2);
-    nrf_gpio_pin_clear(MOS_3);
-    nrf_gpio_pin_clear(MOS_4);
+    //nrf_gpio_cfg_output(MOS_1);
+    //nrf_gpio_cfg_output(MOS_2);
+    //nrf_gpio_cfg_output(MOS_3);
+    //nrf_gpio_cfg_output(MOS_4);
+    //nrf_gpio_pin_clear(MOS_1);
+    //nrf_gpio_pin_clear(MOS_2);
+    //nrf_gpio_pin_clear(MOS_3);
+    //nrf_gpio_pin_clear(MOS_4);
 
     return NRF_SUCCESS;
 }

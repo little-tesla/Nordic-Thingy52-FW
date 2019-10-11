@@ -102,6 +102,7 @@ $(abspath ../../../source/ble_services/ble_tcs.c) \
 $(abspath ../../../source/ble_services/ble_uis.c) \
 $(abspath ../../../source/ble_services/ble_tms.c) \
 $(abspath ../../../source/ble_services/ble_tss.c) \
+$(abspath ../../../sdk_components/drivers_nrf/spi_master/nrf_drv_spi.c) \
 $(abspath ../../../sdk_components/drivers_nrf/common/nrf_drv_common.c) \
 $(abspath ../../../sdk_components/drivers_nrf/gpiote/nrf_drv_gpiote.c) \
 $(abspath ../../../sdk_components/drivers_nrf/twi_master/nrf_drv_twi.c) \
@@ -146,6 +147,11 @@ $(abspath ../../../sdk_components/ble/ble_services/ble_bas/ble_bas.c) \
 $(abspath ../../../sdk_components/libraries/bootloader/dfu/nrf_dfu_settings.c) \
 $(abspath ../../../sdk_components/libraries/crc32/crc32.c) \
 $(abspath ../../../sdk_components/libraries/strerror/nrf_strerror.c) \
+$(abspath ../../../sdk_components/libraries/gfx/nrf_gfx.c) \
+$(abspath ../../../external/thedotfactory_fonts/orkney24pts.c) \
+$(abspath ../../../external/thedotfactory_fonts/orkney8pts.c) \
+$(abspath ../../../external/eink/waveshare_epd.c) \
+$(abspath ../../../external/eink/ImageData.c) \
 #assembly files common to all targets
 ASM_SOURCE_FILES  = $(abspath ../../../sdk_components/toolchain/gcc/gcc_startup_nrf52.S)
 
@@ -184,6 +190,7 @@ INC_PATHS += -I$(abspath ../../../sdk_components/drivers_nrf/pwm)
 INC_PATHS += -I$(abspath ../../../sdk_components/drivers_nrf/rng)
 INC_PATHS += -I$(abspath ../../../sdk_components/drivers_nrf/saadc)
 INC_PATHS += -I$(abspath ../../../sdk_components/drivers_nrf/twi_master)
+INC_PATHS += -I$(abspath ../../../sdk_components/drivers_nrf/spi_master)
 INC_PATHS += -I$(abspath ../../../sdk_components/drivers_nrf/uart)
 INC_PATHS += -I$(abspath ../../../sdk_components/libraries/bootloader/dfu)
 INC_PATHS += -I$(abspath ../../../sdk_components/libraries/button)
@@ -218,6 +225,9 @@ INC_PATHS += -I$(abspath ../../../sdk_components/toolchain)
 INC_PATHS += -I$(abspath ../../../sdk_components/toolchain/cmsis/include)
 INC_PATHS += -I$(abspath ../../../sdk_components/toolchain/gcc)
 INC_PATHS += -I$(abspath ../../../tools/sound)
+INC_PATHS += -I$(abspath ../../../sdk_components/libraries/gfx)
+INC_PATHS += -I$(abspath ../../../external/eink)
+INC_PATHS += -I$(abspath ../../../external/thedotfactory_fonts)
 
 OBJECT_DIRECTORY = _build
 LISTING_DIRECTORY = $(OBJECT_DIRECTORY)
@@ -265,13 +275,14 @@ CFLAGS += -DHAL_NFC_ENGINEERING_BC_FTPAN_WORKAROUND
 #
 CFLAGS += -mcpu=cortex-m4
 CFLAGS += -mthumb -mabi=aapcs --std=gnu99
-CFLAGS += -Wall -Werror -O3 -g3
+CFLAGS += -Wall -Werror -O3 -g3 -Wno-unused-function
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 # keep every function in separate section. This will allow linker to dump unused functions
 CFLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
 CFLAGS += -fno-builtin --short-enums
-#CFLAGS += -NRF_LOG_ENABLED=1 # Use if RTT output is desired.
+CFLAGS += -DNRF_LOG_ENABLED=1 # Use if RTT output is desired.
 # keep every function in separate section. This will allow linker to dump unused functions
+CFLAGS += -DUSE_APP_CONFIG
 
 LDFLAGS += -Xlinker -Map=$(LISTING_DIRECTORY)/$(OUTPUT_FILENAME).map
 LDFLAGS += -mthumb -mabi=aapcs -L $(TEMPLATE_PATH) -T$(LINKER_SCRIPT)
